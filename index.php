@@ -26,6 +26,7 @@ if (!isset($_SESSION["login"]))
   <link rel="stylesheet" href="assets/vendor/@fortawesome/fontawesome-free/css/all.min.css" type="text/css">
   <!-- CSS -->
   <link rel="stylesheet" href="assets/css/main.css" type="text/css">
+  <link rel="stylesheet" type="text/css" href="assets/vendor/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
   <link rel="stylesheet" href="assets/css/style.css" type="text/css">
 </head>
 
@@ -174,72 +175,8 @@ if (!isset($_SESSION["login"]))
                     </div>
                   </div>
                 </div>
-                <div class="card-body">
-                   <?php
-//KONEKSI
-include 'action/koneksi.php';
+                <div class="card-body" id="getStatus">
 
-// print_r($_GET);
-
-
-$sql = mysqli_query ($conn, "SELECT *
-FROM
-    `transaksi_bayar`
-    INNER JOIN `transaksi` 
-        ON (`transaksi_bayar`.`inv` = `transaksi`.`inv`)
-    INNER JOIN `media_cetak` 
-        ON (`transaksi`.`id_media` = `media_cetak`.`id_media`)
-    INNER JOIN `pelanggan` 
-        ON (`transaksi`.`id_pelanggan` = `pelanggan`.`id_pelanggan`)
-    INNER JOIN `kategori_cetak` 
-        ON (`media_cetak`.`id_kategori` = `kategori_cetak`.`id_kategori`) WHERE status_bayar='BELUM LUNAS' GROUP BY transaksi_bayar.inv; ");
-
-?>
-                  
-
-                  <div id="table" class="table-responsive" style="height: 300px;">
-<table id="datamedia_transaksi" class="table align-items-center table-flush">
-      <thead class="thead-light">
-    <tr>
-      <th scope="col" class="sort">No</th>
-      <th scope="col" class="sort">KODE TRANSAKSI</th>
-     <th scope="col" class="sort">NAMA PELANGGAN</th>
-<!--       <th scope="col" class="sort">TELEPON PELANGGAN</th>
-      <th scope="col" class="sort">EMAIL PELANGGAN</th> -->
-      <th scope="col" class="sort">TOTAL</th>
-      <th scope="col" class="sort">BAYAR</th>
-      <th scope="col" class="sort">SISA</th>
-      <th scope="col" class="sort">STATUS</th>
-      <th scope="col" class="sort">AKSI</th>
-    </tr>
-  </thead>
-  <tbody class="list">
-    <?php
-
-    $no=1;
-
-      while ($tampil = mysqli_fetch_array ($sql)) {
-      
-    ?>  
-    <tr>
-      <td><?php echo $no  ?></td>
-      <td><?php echo $tampil['inv'] ?></td> 
-     <td><?php echo $tampil['nama_pelanggan'] ?></td>
-<!--       <td><?php echo $tampil['telpon_pelanggan'] ?></td>
-      <td><?php echo $tampil['email_pelanggan'] ?></td>  -->
-      <td><?php echo number_format($tampil['total']) ?></td>
-      <td><?php echo number_format($tampil['bayar']) ?></td>
-      <td><?php echo number_format($tampil['kembalian']) ?></td>
-      <td><?php echo $tampil['status_bayar'] ?></td>
-      <td> <button data-pelanggan="<?php echo $tampil['id_pelanggan'] ?>" data-id="<?php echo $tampil['inv'] ?>" class="edit btn btn-primary" data-toggle="tooltip" data-placement="top" title="edit" ><i class="fa fa-pencil-alt"></i></button></td>
-    </tr>
-
-
-  <?php $no++;} ?>
-  </tbody>
-</table>
-
-</div>
                 
                 </div>
               </div>
@@ -264,10 +201,12 @@ FROM
   <!-- Scripts -->
   <!-- Core -->
   <script src="assets/vendor/jquery/dist/jquery.min.js"></script>
+  <script src="assets/vendor/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
   <script src="assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
   <script src="assets/vendor/js-cookie/js.cookie.js"></script>
   <script src="assets/vendor/jquery.scrollbar/jquery.scrollbar.min.js"></script>
   <script src="assets/vendor/jquery-scroll-lock/dist/jquery-scrollLock.min.js"></script>
+
 
   <script src="assets/js/argon.js?v=1.2.0"></script>
 </body>
@@ -275,9 +214,40 @@ FROM
 </html>
 
 <script type="text/javascript">
+
+  getStatus();
+   function getStatus(){
+    $.ajax({
+      url:'action/get_status.php',
+      success:function(data){
+        $("#getStatus").html(data);
+      }
+    })
+
+  }
+
+
+  function editBayar(x){
+    var data =  $("#form"+x).serialize();
+    // alert(data);
+     $.ajax({
+      url:'action/edit_bayar.php',
+      type:'POST',
+      data:data,
+      success:function(data){
+        alert(data);
+      }
+    })
+  }
+
+ 
   $(".edit").click(function(e){
     e.preventDefault();
     var inv = $(this).attr("data-id");
-    alert(inv);
+    $("#form"+inv).slideToggle();
+    $("#bayar"+inv).focus();
+
+
+    
   })
 </script>

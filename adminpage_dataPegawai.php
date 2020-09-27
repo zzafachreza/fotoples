@@ -61,7 +61,7 @@
                           <span class="nav-link-text">Data Pelanggan</span>
                         </a>
                       <li class="nav-item">
-                        <a class="nav-link " href="tables.html">
+                       <a class="nav-link " href="adminpage_laporan.php">
                           <i class="ni ni-bullet-list-67 text-default"></i>
                           <span class="nav-link-text">Laporan</span>
                         </a>

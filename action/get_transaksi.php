@@ -30,7 +30,7 @@ FROM
 	    <thead class="thead-light">
 		<tr>
 			<th scope="col" class="sort">No</th>
-			<th scope="col" class="sort">KODE TRANSAKSI</th>
+			<!-- <th scope="col" class="sort">KODE TRANSAKSI</th> -->
 		<!-- 	<th>NAMA PELANGGAN</th>
 			<th>TELEPON PELANGGAN</th>
 			<th>EMAIL PELANGGAN</th> -->
@@ -57,7 +57,7 @@ FROM
 		?>	
 		<tr>
 			<td><?php echo $no  ?></td>
-			<td><?php echo $tampil['id_transaksi'] ?></td> 
+			<!-- <td><?php echo $tampil['id_transaksi'] ?></td>  -->
 <!-- 			<td><?php echo $tampil['nama_pelanggan'] ?></td>
 			<td><?php echo $tampil['telpon_pelanggan'] ?></td>
 			<td><?php echo $tampil['email_pelanggan'] ?></td> -->
