@@ -1,0 +1,20 @@
+.atastabel
+{
+    font-family: Open Sans;
+    margin-top: 5px;
+    margin-left: 15pt;
+
+}
+
+.rowjudul
+{
+	float: left;
+	width: 80%;
+	font-family: Open Sans;
+}
+
+.rowtombol
+{
+	float: left;
+	width: 20%;
+}

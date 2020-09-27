@@ -1,0 +1,17 @@
+<?php
+//KONEKSI
+require 'action/functions.php';
+
+$id_media = $_POST['id_media'];
+
+$sql = mysqli_query ($conn, "SELECT * FROM media_cetak WHERE id_media = '$id_media'" );
+$tampil = mysqli_fetch_array ($sql);
+
+// echo print_r($tampil);
+$data = array(
+			'harga' => $tampil['harga'],
+			'stok' => $tampil['stok']
+			);
+echo json_encode($data);
+
+?>
