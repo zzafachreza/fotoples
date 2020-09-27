@@ -35,6 +35,8 @@ $datatampil = tampilmedia ("SELECT * FROM kategori_cetak ");
   <!-- CSS -->
   <link rel="stylesheet" href="assets/css/main.css" type="text/css">
   <link rel="stylesheet" href="assets/css/style.css" type="text/css">
+    <!-- DATA TABLES CSS -->
+  <link rel="stylesheet" href="assets/dataTables/datatables/dataTables.bootstrap4.css">
 
   <script src="assets/js/jquery-3.4.1.min.js"></script>
 </head>
@@ -139,7 +141,7 @@ $datatampil = tampilmedia ("SELECT * FROM kategori_cetak ");
                       <div class="row">
                         <div class="col-sm-12">
 
-                            <form id="dataForm">
+                            <form id="dataForm" >
                                 <select class="form-control" name="id_pelanggan" required="required" id="pelanggan" style="width: 100%">
                                   <option></option>
                                     <?php
@@ -173,17 +175,46 @@ $datatampil = tampilmedia ("SELECT * FROM kategori_cetak ");
                   <div class="row align-items-center">
                     <div class="col-8">
                       <h3 class="mb-0">Create New Order</h3>
+                      <span>Total : </span>
+                      <span class="Htotal" style="font-weight: bold;font-size: xx-large;"></span>
+
+                      <input type="hidden" name="Htotal2" id="Htotal2">
+                        <a id="payment" class="btn btn-success" style="color: #FFF; width: 200px"> Payment <i class="fa fa-money-bill"> </i></a>
+                         <a id="btnTutup" class="btn btn-primary" style="color: #FFF; width: 200px;display: none;"> Kembali <i class="fa fa-arrow-up"> </i></a>
                     </div>
 
                     <div class="col-4 text-right">
 
                       <button type="submit" class="btn btn-primary"> Tambah <i class="fa fa-plus"> </i></button>
+
                     </div>
                   </div>
                 </div>
                 <div class="card-body">
+
+                  <table class="table table-bordered" id="dataPaymetlist" style="display: none;">
+                    <tr>
+                      <th>Total</th>
+                      <th>Bayar</th>
+                      <th>Sisa</th>
+                      <th></th>
+                    </tr>
+                       <tr>
+                      <th> <span class="Htotal" style="font-weight: bold;font-size: xx-large;"></span></th>
+                      <th>
+                        <input type="" name="bayar" class="form-control" id="bayar" autofocus="autofocus">
+                      </th>
+                      <th>
+                        <span id="kembalian2" style="font-weight: bold;font-size: xx-large;">0</span></th>
+                        <input type="hidden" name="kembalian" id="kembalian" class="form-control">
+                      </th>
+                      <th>
+                        <button id="btnSelesai" class="btn btn-success"><i class="fa fa-check"></i> selesai</button>
+                      </th>
+                    </tr>
+                  </table>
                   
-                  <table cellpadding="3" id="" class="" >
+                  <table cellpadding="3" id="dataFormList" class="">
                               <thead class="thead-light" spacing>
                                 <tr>
                                   <th><label class="form-control-label" >Kategori</label></th>
@@ -203,7 +234,7 @@ $datatampil = tampilmedia ("SELECT * FROM kategori_cetak ");
                                         <td style="width: 15%;">
 
                                           <select class="form-control" name="Kategori" id="kategori">
-                                          <option selected disabled value="" required="">-- Kategori --</option>
+                                          <option>...</option>
                                          <?php
                                          $sql="select * from kategori_cetak";
                                          $hasil=mysqli_query($conn,$sql);
@@ -221,9 +252,8 @@ $datatampil = tampilmedia ("SELECT * FROM kategori_cetak ");
                                          
                                           <select class="form-control" name="media" id="media" selected
                                           >
-                                           <option selected disabled value="">-- Media cetak --</option>
-                                            
-                                              <!-- ditampilkan disini Media -->
+                                           <option>...</option>
+                           
                                           </select>
 
 
@@ -233,14 +263,15 @@ $datatampil = tampilmedia ("SELECT * FROM kategori_cetak ");
                                           <input class="form-control" name="harga" id="harga" required="required">
                                         </td>
                                         <td style="width: 10%;">
-                                          <input type="number" name="qty" id="qty" class="form-control" required="required" onkeyup="hitungSUB()" onclick="hitungSUB()" onblur="stopHitung()" />
+                                          <input type="number" name="qty" id="qty" class="form-control" required="required" />
                                         </td>
                                         <td style="width: 17%;" >
-                                          <input type="text" id="Sub_total" name= "subtotal" class="form-control" value=" " onclick="hitungSUB()" onfocus="hitungSUB()" onblur="stopHitung()" readonly="" />
+                                          <input type="number" id="Sub_total" name="subtotal" class="form-control" readonly="re
+                                          " />
                                         </td>
                                         <td style="width: 20%;" >
 
-                                          <input type="text" id="Keterangan" name="keterangan" class="form-control">
+                                          <input type="text" id="keterangan" name="keterangan" class="form-control">
                                         </td>
                                         <td style="width: 3%;">
                                           <a href="action/act_hapus_pelanggan.php?id_pelanggan=<?= $row["id_pelanggan"] ;?>" class="btn-hapusPelanggan" >
@@ -273,7 +304,7 @@ $datatampil = tampilmedia ("SELECT * FROM kategori_cetak ");
            
           </div> <!-- Akhir Page content -->
 
-          <div id="dataTransaksi" class="col-sm-12 card">
+          <div id="dataTransaksi" class="col-sm-12 card" style="padding: 2%">
             
           </div>
   </div> <!-- Akhir Main Content -->
@@ -294,15 +325,133 @@ $datatampil = tampilmedia ("SELECT * FROM kategori_cetak ");
       </div>
     </div>
   </footer>
+
+   <div class="modal fade" id="modalPayment" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+                          <div class="modal-dialog modal-dialog-centered">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <h1> Tambah Kasir </h1>
+                                  <button type="button" class="close" data-dismiss="modal" id="tomboltambah" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                  </button>
+                                </div>
+                                <div class="modal-body" align="left">
+                                  <form action="" method="post">
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                          <div class="form-group">
+                                            <label class="form-control-label" >Username</label>
+                                            <input type="text"  name="username" required class="form-control" placeholder="Username">
+                                          </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                          <div class="form-group">
+                                            <label class="form-control-label" >Nama Lengkap</label>
+                                            <input type="text" name="nama_kasir" required class="form-control" placeholder="Nama Lengkap">
+                                          </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                          <div class="form-group">
+                                            <label class="form-control-label" >Password</label>
+                                            <input type="password" name="password" required class="form-control" placeholder="Password">
+                                          </div>
+                                        </div>
+                                <div class="modal-footer">
+                                  <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+                                  <button type="submit" class="btn btn-primary" name="tambahkasir" >Tambah Data !</button>
+                                </div>
+                                </form>
+                              </div>
+                            </div>
+                          </div>
+                      </div>
   <!-- Scripts -->
   <!-- Core -->
   <script src="assets/vendor/jquery/dist/jquery.min.js"></script>
   <script src="assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
   <script src="assets/vendor/js-cookie/js.cookie.js"></script>
   <script src="assets/vendor/jquery.scrollbar/jquery.scrollbar.min.js"></script>
- 
+  <script src="assets/vendor/chart.js/dist/Chart.min.js"></script>
+  <script src="assets/vendor/chart.js/dist/Chart.extension.js"></script>
+  <script src ="assets/js/sweetalert2.all.min.js"></script>
+  <script src ="assets/js/jquery-3.5.1.min.js"></script>
+
+
+  <script src="assets/dataTables/datatables/jquery.dataTables.min.js"></script>
+  <script src="assets/dataTables/datatables/dataTables.bootstrap4.min.js"></script>
+
+
+      
+  <script src="assets/dataTables/be_tables_datatables.min.js"></script>
+
 
   <script type="text/javascript">
+    
+    $("#btnSelesai").click(function(e){
+      e.preventDefault();
+        if ($("#bayar").val()=="") {
+          $("#bayar").focus();
+        }else{
+
+          var id_pelanggan = $("#pelanggan").val();
+          var total = $("#Htotal2").val();
+          var bayar = $("#bayar").val();
+          var kembalian = $("#kembalian").val();
+
+           $.ajax({
+                type: "POST",
+                url: "action/insert_bayar.php",
+                data:{
+                  id_pelanggan:id_pelanggan,
+                  total:total,
+                  bayar:bayar,
+                  kembalian:kembalian
+                },
+                success: function(data){
+                  getDataTransaksi(id_pelanggan);
+                  $("#dataFormList").show();
+                  $("#dataPaymetlist").hide();
+                  $("#btnTutup").hide();
+                  $("#payment").show();
+                }
+            });
+
+
+        }
+    })
+
+    $("#bayar").keyup(function(e){
+      e.preventDefault();
+      var total = $("#Htotal2").val();
+      var bayar = $(this).val();
+      var kembalian = total-bayar;
+      console.log(total)
+      $("#kembalian").val(kembalian)
+          $("#kembalian2").text(Number((kembalian).toFixed(1)).toLocaleString())
+    })
+
+    $("#payment").click(function(e){
+      e.preventDefault();
+       var total = $("#Htotal2").val();
+       // alert(total);
+           $("#bayar").focus();
+       $(this).hide();
+       $("#btnTutup").show();
+   
+       $("#dataFormList").hide();
+       $("#dataPaymetlist").show();
+
+    })
+
+    $("#btnTutup").click(function(e){
+      e.preventDefault();
+      $(this).hide();
+      $("#payment").show();
+       $("#dataFormList").show();
+       $("#dataPaymetlist").hide();
+    })
+
+ 
        $("#kategori").change(function(){
             // variabel dari nilai combo box kategori
             var id_kategori = $("#kategori").val();
@@ -315,6 +464,7 @@ $datatampil = tampilmedia ("SELECT * FROM kategori_cetak ");
                 data: "kategori="+id_kategori,
                 success: function(data){
                    $("#media").html(data);
+                         $("#media").first().focus();;
                 }
             });
         });
@@ -335,6 +485,13 @@ $datatampil = tampilmedia ("SELECT * FROM kategori_cetak ");
                 // console.log(data);
                 $("input[name='harga']").val(data.harga);
                 $("#qty").focus();
+
+                $("#qty").change(function(e){
+                  e.preventDefault();
+                    $("#keterangan").focus();
+                    var Sub_total = $(this).val() * $("#harga").val();
+                    $("#Sub_total").val(Sub_total);
+                })
               }
             })
            
@@ -369,6 +526,9 @@ $datatampil = tampilmedia ("SELECT * FROM kategori_cetak ");
        $("#dataForm").submit(function(e){
         e.preventDefault();
         var data = $(this).serialize();
+
+        var id_pelanggan = $("#pelanggan").val();
+        // console.log(id_pelanggan);
           
 
           $.ajax({
@@ -377,8 +537,17 @@ $datatampil = tampilmedia ("SELECT * FROM kategori_cetak ");
             data :data
             ,success:function(data){
               // var data = JSON.parse(data);
-              console.log(data);
-              getDataTransaksi();
+              $("#Sub_total").val("");
+              $("#keterangan").val("");
+              $("#harga").val("");
+              $("#qty").val("");
+              $("#kategori").val("");
+              $("#media").val("");
+              $("#kategori").first().focus();;
+
+   
+             
+              getDataTransaksi(id_pelanggan);
              
             }
           })
@@ -397,8 +566,9 @@ $datatampil = tampilmedia ("SELECT * FROM kategori_cetak ");
             }
             ,success:function(data){
               // var data = JSON.parse(data);
+
               $("#dataTransaksi").html(data)
-              console.log(data);
+              // console.log(data);
              
             }
           })
@@ -414,24 +584,6 @@ $datatampil = tampilmedia ("SELECT * FROM kategori_cetak ");
                        //       })
     </script>
 
-
-<script type="text/javascript">
-      function hitungSUB()
-      {
-        Interval = setInterval ("SUB_total()",1);
-      }
-
-       function SUB_total()
-      {
-        var harga = parseInt(document.getElementById("harga").value);
-        var qty = parseInt(document.getElementById("qty").value);
-        var subtotal = harga * qty ;
-        document.getElementById ("Sub_total").value = subtotal;
-       }
-       function stopHitung(){
-        clearInterval(Interval);
-       }
-    </script>
 
 
 </body>

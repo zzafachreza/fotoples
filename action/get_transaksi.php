@@ -2,7 +2,7 @@
 
         <?php
 //KONEKSI
-$conn = mysqli_connect ("localhost", "root", "" , "fotoples");
+include 'koneksi.php';
 
 // print_r($_GET);
 
@@ -25,35 +25,39 @@ FROM
 // echo json_encode($data);
 
 ?>
- <div id="table" class="table-responsive">
-<table class="table align-items-center table-flush">
+ <div id="table" class="table-responsive" style="height: 300px;">
+<table id="datamedia_transaksi" class="table align-items-center table-flush">
 	    <thead class="thead-light">
 		<tr>
-			<th>No</th>
-			<th>KODE TRANSAKSI</th>
+			<th scope="col" class="sort">No</th>
+			<th scope="col" class="sort">KODE TRANSAKSI</th>
 		<!-- 	<th>NAMA PELANGGAN</th>
 			<th>TELEPON PELANGGAN</th>
 			<th>EMAIL PELANGGAN</th> -->
-			<th>KATEGORi</th>
-			<th>MEDIA</th>
-			<th>HARGA</th>
-			<th>QTY</th>
-			<th>SUBTOTAL</th>
-			<th>KETERANGAN</th>
+			<th scope="col" class="sort">KATEGORi</th>
+			<th scope="col" class="sort">MEDIA</th>
+			<th scope="col" class="sort">HARGA</th>
+			<th scope="col" class="sort">QTY</th>
+			<th scope="col" class="sort">SUBTOTAL</th>
+			<th scope="col" class="sort">KETERANGAN</th>
+			<th scope="col" class="sort">AKSI</th>
 		</tr>
 	</thead>
-	<tbody>
+	<tbody class="list">
 		<?php
 
 		$no=1;
+		$total =0;
 
 			while ($tampil = mysqli_fetch_array ($sql)) {
 				# code...
+
+				$total += $tampil['subtotal'];
 			
 		?>	
 		<tr>
 			<td><?php echo $no  ?></td>
-			<td><?php echo $tampil['id_transaksi'] ?></td>
+			<td><?php echo $tampil['id_transaksi'] ?></td> 
 <!-- 			<td><?php echo $tampil['nama_pelanggan'] ?></td>
 			<td><?php echo $tampil['telpon_pelanggan'] ?></td>
 			<td><?php echo $tampil['email_pelanggan'] ?></td> -->
@@ -63,10 +67,51 @@ FROM
 			<td><?php echo number_format($tampil['qty']) ?></td>
 			<td><?php echo number_format($tampil['subtotal']) ?></td>
 			<td><?php echo $tampil['keterangan'] ?></td>
+			<td> <button data-pelanggan="<?php echo $tampil['id_pelanggan'] ?>" data-id="<?php echo $tampil['id_transaksi'] ?>" class="hapus btn btn-warning" data-toggle="tooltip" data-placement="top" title="Hapus" ><i class="fa fa-trash"></i></button></td>
 		</tr>
 
 
 	<?php $no++;} ?>
 	</tbody>
 </table>
+
+<input type="hidden" id="total" name="total" value="<?php echo number_format($total) ?>">
+<input type="hidden" id="total2" name="total" value="<?php echo $total ?>">
+
 </div>
+
+
+<script type="text/javascript">
+
+	 var total = $("#total").val();
+	 var total2 = $("#total2").val();
+	 var kembalian = $("#total2").val();
+          $(".Htotal").text(total);
+          $("#kembalian2").text(kembalian);
+            $("#Htotal2").val(total2);
+
+
+	$(".hapus").click(function(e){
+		e.preventDefault();
+		var id_transaksi = $(this).attr("data-id");
+		var id_pelanggan = $(this).attr("data-pelanggan");
+		console.log(id_transaksi);
+
+		 $.ajax({
+            url:'action/delete_transaksi.php',
+            type:'POST',
+            data :{
+            	id_transaksi:id_transaksi
+            }
+            ,success:function(data){
+              // var data = JSON.parse(data);
+              // console.log(data);
+              getDataTransaksi(id_pelanggan);
+             
+             
+            }
+          })
+
+
+	})
+</script>

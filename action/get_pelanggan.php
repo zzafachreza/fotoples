@@ -1,6 +1,6 @@
 <?php
 //KONEKSI
-$conn = mysqli_connect ("localhost", "root", "" , "fotoples");
+include 'koneksi.php';
 $id_pelanggan = $_GET['id_pelanggan'];
 
 $sql = mysqli_query ($conn, "SELECT * FROM pelanggan WHERE id_pelanggan = '$id_pelanggan'" );

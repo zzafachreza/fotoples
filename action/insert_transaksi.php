@@ -1,13 +1,10 @@
 <?php
 //KONEKSI
-$conn = mysqli_connect ("localhost", "root", "" , "fotoples");
+include 'koneksi.php';
 // $id_pelanggan = $_GET['id_pelanggan'];
-	print_r($_GET);
 
-	$id_transaksi = "INV-".date('ymdhis');
-
-echo $sql = mysqli_query ($conn, "INSERT INTO `fotoples`.`transaksi`
-            (`id_transaksi`,
+ $sql = mysqli_query ($conn, "INSERT INTO `transaksi`
+            (
              `tanggal`,
              `id_pelanggan`,
              `id_media`,
@@ -16,7 +13,7 @@ echo $sql = mysqli_query ($conn, "INSERT INTO `fotoples`.`transaksi`
              `subtotal`,
              `keterangan`,
              `status_transaksi`)
-VALUES ('$id_transaksi',
+VALUES (
         NOW(),
         '".$_GET['id_pelanggan']."',
         '".$_GET['media']."',

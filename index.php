@@ -168,12 +168,78 @@ if (!isset($_SESSION["login"]))
                       <h3 class="mb-0">Status Transaction </h3>
                     </div>
                     <div class="col-4 text-right">
-                      <a href="#!" class="btn btn-sm btn-primary">Settings</a>
+                      <table>
+                        
+                      </table>
                     </div>
                   </div>
                 </div>
                 <div class="card-body">
+                   <?php
+//KONEKSI
+include 'action/koneksi.php';
+
+// print_r($_GET);
+
+
+$sql = mysqli_query ($conn, "SELECT *
+FROM
+    `transaksi_bayar`
+    INNER JOIN `transaksi` 
+        ON (`transaksi_bayar`.`inv` = `transaksi`.`inv`)
+    INNER JOIN `media_cetak` 
+        ON (`transaksi`.`id_media` = `media_cetak`.`id_media`)
+    INNER JOIN `pelanggan` 
+        ON (`transaksi`.`id_pelanggan` = `pelanggan`.`id_pelanggan`)
+    INNER JOIN `kategori_cetak` 
+        ON (`media_cetak`.`id_kategori` = `kategori_cetak`.`id_kategori`) WHERE status_bayar='BELUM LUNAS' GROUP BY transaksi_bayar.inv; ");
+
+?>
                   
+
+                  <div id="table" class="table-responsive" style="height: 300px;">
+<table id="datamedia_transaksi" class="table align-items-center table-flush">
+      <thead class="thead-light">
+    <tr>
+      <th scope="col" class="sort">No</th>
+      <th scope="col" class="sort">KODE TRANSAKSI</th>
+     <th scope="col" class="sort">NAMA PELANGGAN</th>
+<!--       <th scope="col" class="sort">TELEPON PELANGGAN</th>
+      <th scope="col" class="sort">EMAIL PELANGGAN</th> -->
+      <th scope="col" class="sort">TOTAL</th>
+      <th scope="col" class="sort">BAYAR</th>
+      <th scope="col" class="sort">SISA</th>
+      <th scope="col" class="sort">STATUS</th>
+      <th scope="col" class="sort">AKSI</th>
+    </tr>
+  </thead>
+  <tbody class="list">
+    <?php
+
+    $no=1;
+
+      while ($tampil = mysqli_fetch_array ($sql)) {
+      
+    ?>  
+    <tr>
+      <td><?php echo $no  ?></td>
+      <td><?php echo $tampil['inv'] ?></td> 
+     <td><?php echo $tampil['nama_pelanggan'] ?></td>
+<!--       <td><?php echo $tampil['telpon_pelanggan'] ?></td>
+      <td><?php echo $tampil['email_pelanggan'] ?></td>  -->
+      <td><?php echo number_format($tampil['total']) ?></td>
+      <td><?php echo number_format($tampil['bayar']) ?></td>
+      <td><?php echo number_format($tampil['kembalian']) ?></td>
+      <td><?php echo $tampil['status_bayar'] ?></td>
+      <td> <button data-pelanggan="<?php echo $tampil['id_pelanggan'] ?>" data-id="<?php echo $tampil['inv'] ?>" class="edit btn btn-primary" data-toggle="tooltip" data-placement="top" title="edit" ><i class="fa fa-pencil-alt"></i></button></td>
+    </tr>
+
+
+  <?php $no++;} ?>
+  </tbody>
+</table>
+
+</div>
                 
                 </div>
               </div>
@@ -207,3 +273,11 @@ if (!isset($_SESSION["login"]))
 </body>
 
 </html>
+
+<script type="text/javascript">
+  $(".edit").click(function(e){
+    e.preventDefault();
+    var inv = $(this).attr("data-id");
+    alert(inv);
+  })
+</script>
