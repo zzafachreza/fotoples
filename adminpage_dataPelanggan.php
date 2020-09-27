@@ -45,6 +45,12 @@
                           <span class="nav-link-text">Dashboard</span>
                         </a>
                       </li>
+                       <li class="nav-item">
+                        <a class="nav-link" href="new_order.php">
+                          <i class="fa fa-desktop text-primary"></i>
+                          <span class="nav-link-text">POS</span>
+                        </a>
+                      </li>
                       <li class="nav-item">
                         <a class="nav-link" href="adminpage_mediaCetak.php">
                           <i class="ni ni-archive-2 text-orange"></i>

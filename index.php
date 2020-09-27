@@ -59,7 +59,7 @@ if (!isset($_SESSION["login"]))
         </div>
         <ul class="navbar-nav mr-auto">
           <li class="nav-item">
-            <a href="index.php" class="nav-link">
+            <a href="adminpage_laporan.php" class="nav-link">
               <span class="nav-link-inner--text font-weight-bold">Home</span>
             </a>
           </li>
@@ -69,7 +69,7 @@ if (!isset($_SESSION["login"]))
             </a>
           </li>
           <li class="nav-item">
-            <a href="register.html" class="nav-link">
+            <a href="index.php" class="nav-link">
               <span class="nav-link-inner--text">Status Order</span>
             </a>
           </li>

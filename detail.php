@@ -1,5 +1,38 @@
 
+<?php
+  include 'action/koneksi.php';
+  session_start();
+  // print_r($_SESSION);
+  $inv = $_GET['inv'];
 
+  $sqlHD = mysqli_query ($conn, "SELECT *
+FROM
+    `transaksi_bayar`
+    INNER JOIN `transaksi` 
+        ON (`transaksi_bayar`.`inv` = `transaksi`.`inv`)
+    INNER JOIN `media_cetak` 
+        ON (`transaksi`.`id_media` = `media_cetak`.`id_media`)
+    INNER JOIN `pelanggan` 
+        ON (`transaksi`.`id_pelanggan` = `pelanggan`.`id_pelanggan`)
+    INNER JOIN `kategori_cetak` 
+        ON (`media_cetak`.`id_kategori` = `kategori_cetak`.`id_kategori`) WHERE transaksi_bayar.inv='$inv' GROUP BY transaksi_bayar.inv; ");
+$tampilHD = mysqli_fetch_array ($sqlHD);
+
+
+  $sqlDT = mysqli_query ($conn, "SELECT *
+FROM
+    `transaksi_bayar`
+    INNER JOIN `transaksi` 
+        ON (`transaksi_bayar`.`inv` = `transaksi`.`inv`)
+    INNER JOIN `media_cetak` 
+        ON (`transaksi`.`id_media` = `media_cetak`.`id_media`)
+    INNER JOIN `pelanggan` 
+        ON (`transaksi`.`id_pelanggan` = `pelanggan`.`id_pelanggan`)
+    INNER JOIN `kategori_cetak` 
+        ON (`media_cetak`.`id_kategori` = `kategori_cetak`.`id_kategori`) WHERE transaksi.inv='$inv'");
+
+
+        ?>
 
 
 <!DOCTYPE html>
@@ -121,161 +154,103 @@
                     <div class="card-header">
                       <div class="row align-items-center">
                         <div class="col-4">
-                          <h2 class="mb-0">Laporan Media Cetak</h2>
+                          <a  href="adminpage_laporan.php" class="btn btn-sm btn-primary"> <i class="fa fa-arrow-left"> </i> Kembali</a>
+                          <h2 class="mb-0">Laporan Media Cetak - Detail</h2>
                         </div>
-                        <div class="col-8 text-left">
-                         <form>
-                            <table class="table">
-                            <tr>
-                              <td>
-                                <label>From</label>
-                                <input type="text" name="awal" class="tgl form-control" value="<?php echo isset($_GET['awal']) ? $_GET['awal']:date('Y-m-d') ?>">
-                              </td>
-                              <td>
-                                <label>To</label>
-                                <input type="text" name="akhir" class="tgl form-control" value="<?php echo isset($_GET['akhir']) ? $_GET['akhir']:date('Y-m-d') ?>">
-                              </td>
-                              <td>
-                                 <button type="submit" class="btn btn-sm btn-primary" style="height: 45px;width: 100px;margin-top: 25px;"> <i class="fa fa-search"> </i> Seacrh</button>
-                              </td>
-                            </tr>
-                          </table>
-                         </form>
+                        <div class="col-8 text-right">
+                         
+                          
+                         <h1><?php echo $tampilHD['inv'] ?></h1>
                          
                         </div>
                       </div>
                     </div>
 
-                           <?php
-                           error_reporting(0);
-//KONEKSI
-include 'action/koneksi.php';
-
-// print_r($_GET);
-
-
-if ($_GET['awal']) {
-  # code...
-  $awal = $_GET['awal'];
-  $akhir = $_GET['akhir'];
-
-$sql = mysqli_query ($conn, "SELECT *
-FROM
-    `transaksi_bayar`
-    INNER JOIN `transaksi` 
-        ON (`transaksi_bayar`.`inv` = `transaksi`.`inv`)
-    INNER JOIN `media_cetak` 
-        ON (`transaksi`.`id_media` = `media_cetak`.`id_media`)
-    INNER JOIN `pelanggan` 
-        ON (`transaksi`.`id_pelanggan` = `pelanggan`.`id_pelanggan`)
-    INNER JOIN `kategori_cetak` 
-        ON (`media_cetak`.`id_kategori` = `kategori_cetak`.`id_kategori`) WHERE tanggal BETWEEN '$awal' AND '$akhir' GROUP BY transaksi_bayar.inv; ");
-
-}else{
-
-$sql = mysqli_query ($conn, "SELECT *
-FROM
-    `transaksi_bayar`
-    INNER JOIN `transaksi` 
-        ON (`transaksi_bayar`.`inv` = `transaksi`.`inv`)
-    INNER JOIN `media_cetak` 
-        ON (`transaksi`.`id_media` = `media_cetak`.`id_media`)
-    INNER JOIN `pelanggan` 
-        ON (`transaksi`.`id_pelanggan` = `pelanggan`.`id_pelanggan`)
-    INNER JOIN `kategori_cetak` 
-        ON (`media_cetak`.`id_kategori` = `kategori_cetak`.`id_kategori`) GROUP BY transaksi_bayar.inv; ");
-
-}
-
-
-
-// $sql = mysqli_query ($conn, "SELECT *
-// FROM
-//     `transaksi_bayar`
-//     INNER JOIN `transaksi` 
-//         ON (`transaksi_bayar`.`inv` = `transaksi`.`inv`)
-//     INNER JOIN `media_cetak` 
-//         ON (`transaksi`.`id_media` = `media_cetak`.`id_media`)
-//     INNER JOIN `pelanggan` 
-//         ON (`transaksi`.`id_pelanggan` = `pelanggan`.`id_pelanggan`)
-//     INNER JOIN `kategori_cetak` 
-//         ON (`media_cetak`.`id_kategori` = `kategori_cetak`.`id_kategori`) WHERE status_bayar='BELUM LUNAS' GROUP BY transaksi_bayar.inv; ");
-
-
-?>
+                          
                   
 
 <div id="table" class="table-responsive" style="height: 600px;padding: 1%">
-<table id="datamedia_transaksi" class="table align-items-center table-flush">
-      <thead class="thead-light">
+  <table class="table">
+    <tr>
+      <td>NAMA PELANGGAN</td>
+      <td><?php echo $tampilHD['nama_pelanggan'] ?></td>
+      <td>TANGGAL TRANSAKSI</td>
+      <td><?php echo $tampilHD['tanggal'] ?></td>
+    </tr>
+    <tr>
+      <td>TELEPON PELANGGAN</td>
+      <td><?php echo $tampilHD['telpon_pelanggan'] ?></td>
+      <td>STATUS TRANSAKSI</td>
+      <td><?php echo $tampilHD['status_transaksi'] ?></td>
+    </tr>
+     <tr>
+      <td>EMAIL PELANGGAN</td>
+      <td><?php echo $tampilHD['email_pelanggan'] ?></td>
+      <td>STATUS BAYAR</td>
+      <td><h1><?php echo $tampilHD['status_bayar'] ?></h1></td>
+    </tr>
+  </table>
+  <hr/>
+
+  <table class="table table-bordered table-striped">
     <tr>
       <th scope="col" class="sort">No</th>
-      <th scope="col" class="sort">KODE TRANSAKSI</th>
-            <th scope="col" class="sort">STATUS TRANSAKSI</th>
-       <th scope="col" class="sort">TANGGAL TRANSAKSI</th>
-     <!-- <th scope="col" class="sort">NAMA PELANGGAN</th> -->
-<!--       <th scope="col" class="sort">TELEPON PELANGGAN</th>
-      <th scope="col" class="sort">EMAIL PELANGGAN</th> -->
-      <th scope="col" class="sort">TOTAL</th>
-      <th scope="col" class="sort">BAYAR</th>
-      <th scope="col" class="sort">SISA</th>
-      <th scope="col" class="sort">STATUS BAYAR</th>
-      <th scope="col" class="sort">TANGGAL BAYAR</th>
+      <!-- <th scope="col" class="sort">KODE TRANSAKSI</th> -->
+    <!--  <th>NAMA PELANGGAN</th>
+      <th>TELEPON PELANGGAN</th>
+      <th>EMAIL PELANGGAN</th> -->
+      <th scope="col" class="sort">KATEGORi</th>
+      <th scope="col" class="sort">MEDIA</th>
+      <th scope="col" class="sort">HARGA</th>
+      <th scope="col" class="sort">QTY</th>
+      <th scope="col" class="sort">SUBTOTAL</th>
+      <th scope="col" class="sort">KETERANGAN</th>
 
-      <th scope="col" class="sort">AKSI</th>
     </tr>
-  </thead>
-  <tbody class="list">
     <?php
 
     $no=1;
+    $total =0;
 
-      while ($tampil = mysqli_fetch_array ($sql)) {
+      while ($tampil = mysqli_fetch_array ($sqlDT)) {
+        # code...
+
+        $total += $tampil['subtotal'];
       
     ?>  
     <tr>
       <td><?php echo $no  ?></td>
-      <td><?php echo $tampil['inv'] ?></td> 
-            <td><?php echo $tampil['tanggal'] ?></td>
-            <td><?php echo $tampil['status_transaksi'] ?></td>
-     <!-- <td><?php echo $tampil['nama_pelanggan'] ?></td> -->
-
-<!--       <td><?php echo $tampil['telpon_pelanggan'] ?></td>
-      <td><?php echo $tampil['email_pelanggan'] ?></td>  -->
-      <td><?php echo number_format($tampil['total']) ?></td>
-      <td><?php echo number_format($tampil['bayar']) ?>
-
-        <form id="form<?php echo $tampil['inv'] ?>" onsubmit="editBayar('<?php echo $tampil['inv'] ?>');return false" style="display: none">
-                <input type="hidden" name="inv" class="form-control" value="<?php echo $tampil['inv'] ?>">
-                <input type="hidden" name="total" class="form-control" value="<?php echo $tampil['total'] ?>">
-                <div class="form-group">
-                  <label>Tanggal Bayar</label>
-                  <input type="text" name="tanggal_bayar" class="tgl form-control" value="<?php echo date('Y-m-d') ?>">                
-                </div>
-                 <div class="form-group">
-                  <label>Bayar</label>
-                   <input id="bayar<?php echo $tampil['inv'] ?>" type="" name="bayar" class="form-control" autocomplete="off" autofocus="autofocus" style="width: 400px">              
-                </div>
-               
-                <div class="form-group">
-                  <button class="btn btn-success" type="submit" style="width: 400px">OK</button>
-                </div>
-                  
-        </form>
-      </td>
-      <td><?php echo number_format($tampil['kembalian']) ?></td>
-      <td><?php echo $tampil['status_bayar'] ?></td>
-      <td><?php echo $tampil['tanggal_bayar'] ?></td>
-
-      <td> <a target="_BLANK" href="print.php?inv=<?php echo $tampil['inv']  ?>" style="color: #FFF" class="edit btn btn-danger" data-toggle="tooltip" data-placement="top" title="print" ><i class="fa fa-print"></i> Print</a>
-        <a target="_BLANK" href="detail.php?inv=<?php echo $tampil['inv']  ?>" style="color: #FFF" class="edit btn btn-primary" data-toggle="tooltip" data-placement="top" title="print" ><i class="fa fa-search"></i> Detail</a>
-      </td>
-    </tr>
+      <!-- <td><?php echo $tampil['id_transaksi'] ?></td>  -->
+<!--      <td><?php echo $tampil['nama_pelanggan'] ?></td>
+      <td><?php echo $tampil['telpon_pelanggan'] ?></td>
+      <td><?php echo $tampil['email_pelanggan'] ?></td> -->
+      <td><?php echo $tampil['nama_kategori'] ?></td>
+      <td><?php echo $tampil['nama_media'] ?></td>
+      <td><?php echo number_format($tampil['harga']) ?></td>
+      <td><?php echo number_format($tampil['qty']) ?></td>
+      <td><?php echo number_format($tampil['subtotal']) ?></td>
+      <td><?php echo $tampil['keterangan'] ?></td>
+         </tr>
 
 
   <?php $no++;} ?>
-  </tbody>
-</table>
+  </table>
+   <div class="row align-items-center">
+
+                        <div class="col-4">
+                          
+                        </div>
+                        <div class="col-8 text-right">
+                         
+                          
+                         <p style="font-size: 25px;font-weight: bold;"><?php echo "Rp. ".number_format($tampilHD['total'] )." (TOTAL) " ?></p>
+                       
+                        <p style="font-size: 25px;font-weight: bold;"><?php echo "Rp. ".number_format($tampilHD['bayar'] )." (BAYAR) " ?></p>
+                       
+                        <p style="font-size: 25px;font-weight: bold;"><?php echo "Rp. ".number_format($tampilHD['kembalian'])." (SISA)" ?></p>
+                         
+                        </div>
+
 </div>
                   
                          
