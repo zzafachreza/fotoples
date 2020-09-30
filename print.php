@@ -70,7 +70,7 @@ tr.highlight {
 
 </style>
 
-<body  onLoad="window.print()">
+<body  onLoad="window.prints()">
 	<page size="B5">
     <center>
         <p>Welcome to</p>
@@ -108,7 +108,7 @@ tr.highlight {
                 </tr>
                 <tr>
                    <td align="left" style="padding:-100px"><?php echo $tampilHD['tanggal'] ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $tampilHD['status_transaksi'] ?></td>
-                    <td align="center"><?php echo $_SESSION['nama_lengkap'] ?></td>
+                    <td align="center"><?php echo $_SESSION['fullnama'] ?></td>
                 </tr>
                 <tr>
 				<td colspan="2">=========================================</td>                </tr>

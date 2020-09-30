@@ -86,7 +86,7 @@ $datatampil = tampilmedia ("SELECT * FROM kategori_cetak ");
         </div>
         <ul class="navbar-nav mr-auto">
           <li class="nav-item">
-            <a href="adminpage_laporan.php" class="nav-link">
+            <a href="home.php" class="nav-link">
               <span class="nav-link-inner--text ">Home</span>
             </a>
           </li>

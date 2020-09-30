@@ -1,2 +1,2 @@
 <?php
-$conn = mysqli_connect ("localhost", "root", "" , "fotoples");
+$conn = mysqli_connect ("localhost", "root", "" , "bikinap2_fotoples");
